@@ -1,0 +1,2 @@
+from squeezebox.squeezecontrol import SqueezeControl
+from squeezebox.squeezecontact import SqueezeContact

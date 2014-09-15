@@ -1,0 +1,64 @@
+#! /bin/bash
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+COMMAND="$1"
+CURLURL="http://10.0.0.2:9000" #corresponds with the ip adres of the squeezeserver, make sure the webclient is available
+CURLURLEXTRA="/jsonrpc.js"
+MAC="00:00:00:00:00:01" #corresponds to the macadres in this file http://www.gerrelt.nl/RaspberryPi/squeezelite.sh , if you use it. 
+OPTIONS=""
+LOG=0
+PLAYLISTID="30324" #TEMP
+RM="POST" # REQUEST METHOD
+
+
+#echo "Running command: $COMMAND"
+
+case "$COMMAND" in
+        play)
+                OPTIONS="{\"params\":[\""$MAC"\",[\"play\"]],\"method\":\"slim.request\",\"id\":1,\"result\":{}}"
+        ;;
+        pause)
+                OPTIONS="{\"params\":[\""$MAC"\",[\"pause\"]],\"method\":\"slim.request\",\"id\":1,\"result\":{}}"
+        ;;
+	poweroff)
+		OPTIONS="{\"params\":[\""$MAC"\",[\"power\",\"0\"]],\"method\":\"slim.request\",\"id\":1,\"result\":{}}"
+	;;
+	poweron)
+		OPTIONS="{\"params\":[\""$MAC"\",[\"power\",\"1\"]],\"method\":\"slim.request\",\"id\":1,\"result\":{}}"
+	;;
+	isPlaying)
+		RM="RET"
+		OPTIONS="{\"id\":1,\"method\":\"slim.request\",\"params\":[\""$MAC"\",[\"status\",\"-\",1,\"tags:uB\"]]}"
+	;;
+        playlist)
+        	RM="GET"
+                CURLURLEXTRA="/anyurl?p0=playlistcontrol&p1=cmd:load&p2=playlist_id:"$PLAYLISTID"&player="$MAC"&_dc=1359911558334"
+        ;;
+        *)
+                echo "Usage: $SCRIPTNAME {play|pause|poweron|poweroff|playlist X}" >&2
+                exit 3;
+        ;;
+esac
+
+
+if [ "$RM" = "POST" ]
+then 
+	curl --verbose -H "Content-Type: application/json" -X POST -d "$OPTIONS" "$CURLURL""$CURLURLEXTRA"
+elif [ "$RM" = "RET" ]
+then
+	matchpause="\"mode\":\"pause\""
+	matchplay="\"mode\":\"play\""
+	CURLOUT=$(curl -s -H "Content-Type: application/json" -X POST -d "$OPTIONS" "$CURLURL""$CURLURLEXTRA")
+	if [[ "$CURLOUT" == *$matchplay*  ]]
+	then
+		echo "1"
+	elif [[ "$CURLOUT" == *$matchpause* ]]
+	then
+		echo "0"
+	else
+		echo "Oops"
+	fi
+
+else 
+	curl --verbose "$CURLURL""$CURLURLEXTRA"
+fi
+# --stderr curl_err.log > /dev/null
