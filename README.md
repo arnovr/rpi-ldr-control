@@ -42,7 +42,7 @@ I made a small time checker in it, so when you go to the bathroom late at night,
 ```
 start = datetime.time(8, 0) // 8 AM
 end = datetime.time(22, 30) // 10:30 PM
-
+```
 Thats it for settings, make the run.py script executable ( chmod +x run.py )
 Add it to you'r startup script and you are all set!
 
