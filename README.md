@@ -45,3 +45,11 @@ end = datetime.time(22, 30) // 10:30 PM
 
 Thats it for settings, make the run.py script executable ( chmod +x run.py )
 Add it to you'r startup script and you are all set!
+
+
+Keep in mind, i did not put a massive effort in the code, it works, so i am content :p
+
+![Hardware Setup](https://raw.githubusercontent.com/arnovr/rpi-ldr-control/master/images/DSCN2195.JPG "Hardware Setup")
+
+![LDR](https://raw.githubusercontent.com/arnovr/rpi-ldr-control/master/images/DSCN2194.JPG "LDR")
+
